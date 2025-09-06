@@ -17,6 +17,7 @@ services:
       - web
     networks:
       - djangonetwork
+
   web:
     build:
       context: .
@@ -28,12 +29,11 @@ services:
       - ./src:/src
     expose:
       - "8000"
-    links:
-      - redis
     env_file:
       - ./.envs/.django
     networks:
       - djangonetwork
+
   db:
     build:
       context: .
@@ -45,14 +45,7 @@ services:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
     ports:
-    - "5432:5432"
-    networks:
-      - djangonetwork
-  redis:
-    image: redis:alpine
-    container_name: rz01
-    ports:
-      - "16379:6379"
+      - "5432:5432"
     networks:
       - djangonetwork
 

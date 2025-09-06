@@ -19,18 +19,21 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 from django.urls import path, include 
 from django.http import HttpResponse
+from django.views.generic import TemplateView
 
-# from ..myapp import views
+# from . import views
 
 
 urlpatterns = [
+    # path("home", views.pagina_home),
     path('admin/', admin.site.urls),
-    path('myapp/', include('myapp.urls')),
     path('cenarios/', include('cenarios.urls')),
     path('simulacao/', include('simulacao.urls')),
+    path('auth/', include("authentication.urls")),
+
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

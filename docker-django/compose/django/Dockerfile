@@ -1,4 +1,4 @@
-# More Datascience frendly gist can be found here: https://gist.github.com/ruddra/870d7a51238ddfa4b50375086c12a4f5
+# More Datascience friendly gist can be found here: https://gist.github.com/ruddra/870d7a51238ddfa4b50375086c12a4f5
 # pull official python alpine image
 FROM python:3.7-alpine
 
@@ -18,7 +18,8 @@ RUN apk update && apk add --no-cache \
     postgresql \
     zlib \
     jpeg 
-# un-comment the following two dependecies if you want to add library like pandas, scipy and numpy
+
+# un-comment the following two dependencies if you want to add library like pandas, scipy and numpy
 # openblas \ 
 # libstdc++ 
 
@@ -30,6 +31,7 @@ RUN apk add --no-cache --virtual build-deps \
     postgresql-dev\
     zlib-dev \
     jpeg-dev 
+
 # un-comment if you want to install numpy, pandas, scipy etc and their supported dependencies
 # g++ \
 # openblas-dev \
@@ -55,8 +57,8 @@ RUN apk del build-deps && \
     rm -rf ~/.cache/pip
 
 RUN addgroup --system django && adduser --system django --ingroup django
-# COPY --from=base /opt/venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
+
 USER django
+
 # CMD will run when this dockerfile is running
-CMD ["sh", "-c", "python manage.py collectstatic --no-input; python manage.py migrate; gunicorn mydjango.wsgi -b 0.0.0.0:8000 & celery --app myapp.tasks worker --loglevel=INFO"]
+CMD ["sh", "-c", "python manage.py collectstatic --no-input; python manage.py migrate; gunicorn mydjango.wsgi -b 0.0.0.0:8000"]
