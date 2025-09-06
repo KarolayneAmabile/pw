@@ -1,0 +1,19 @@
+{% extends "users/base.html" %}
+
+{% block title %}Painel do Diretor{% endblock %}
+
+{% block content %}
+    <div style="text-align: center;">
+        
+        <h2>Bem-vindo, {{ user.username }}! :D</h2>
+        
+        <p style="font-size: 1.1em; color: #555;">
+            Você é um <strong>Diretor</strong> e não tem muitos acessos.
+        </p>
+
+        <p style="margin-top: 2em;">
+            <a href="{% url 'logout' %}">Sair da conta</a>
+        </p>
+
+    </div>
+{% endblock %}
