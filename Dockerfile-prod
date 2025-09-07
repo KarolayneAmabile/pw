@@ -52,5 +52,5 @@ USER django
 # Rodar collectstatic no build
 RUN python manage.py collectstatic --no-input
 
-# Comando final: Gunicorn + Celery
-CMD ["sh", "-c", "python manage.py migrate && gunicorn mydjango.wsgi -b 0.0.0.0:8000 & celery -A mydjango worker --loglevel=INFO"]
+# Comando final: Gunicorn apenas
+CMD ["sh", "-c", "python manage.py migrate && gunicorn mydjango.wsgi -b 0.0.0.0:8000"]
