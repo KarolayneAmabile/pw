@@ -9,7 +9,6 @@ ACOES = {c for c, _ in SimulacaoPeriodo.ACAO_CHOICES}
 def gerar_lote_id():
     return uuid.uuid4().hex[:16]
   
-  
 def _criar_execucao(jogo: Jogo, acao: str, lote_id: str, user):
     obj, created = SimulacaoExecucao.objects.get_or_create(
         jogo=jogo,
@@ -199,5 +198,6 @@ def processar_lista(jogos_ids, acao, user=None, lote_id=None):
         )
 
     return {"lote_id": lote, "resultados": resultados}
+
 
 
