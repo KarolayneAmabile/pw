@@ -59,17 +59,15 @@ class SimularForm(forms.Form):
         widget=forms.HiddenInput(),
         required=False
     )
-
-    # Persistem os filtros atuais no POST
+    
     status = forms.CharField(widget=forms.HiddenInput(), required=False)
     q = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-    # Seleção múltipla (checkboxes) — obrigatório
     jogos = forms.ModelMultipleChoiceField(
         label="Selecione os jogos",
         queryset=Jogo.objects.none(),
         required=True,
-        widget=forms.CheckboxSelectMultiple()  # precisa ser instanciado
+        widget=forms.CheckboxSelectMultiple()
     )
 
     def __init__(self, *args, **kwargs):
@@ -91,7 +89,7 @@ class SimularForm(forms.Form):
         """
         val = (self.cleaned_data.get("request_id") or "").strip()
         if not val:
-            return ""  # vazio é permitido; a view gerará um novo
+            return "" 
 
         if len(val) != 16:
             raise forms.ValidationError("ID do lote inválido: use exatamente 16 caracteres hexadecimais.")
@@ -107,11 +105,9 @@ class SimularForm(forms.Form):
         """Garante seleção e que todos os jogos sejam ATIVOS."""
         selecionados = self.cleaned_data.get("jogos")
 
-        # Pelo menos um jogo
         if not selecionados or selecionados.count() == 0:
             raise forms.ValidationError("Selecione ao menos um jogo.")
 
-        # Apenas ATIVOS podem ser simulados
         ativo_code = getattr(Jogo, "ATIVO", "A")
         inativos = [j for j in selecionados if getattr(j, "status", None) != ativo_code]
         if inativos:
@@ -123,3 +119,4 @@ class SimularForm(forms.Form):
             )
 
         return selecionados
+
