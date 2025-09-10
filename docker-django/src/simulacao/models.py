@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings  # pode continuar, mesmo sem usar, se já estiver aí
+from django.conf import settings
 from jogos.models import Jogo
 
 
