@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views import View
 from django.core.paginator import Paginator
-
 from jogos.models import Jogo
 from .forms import SimularForm, FiltroJogosForm
 from .services import processar_lista, gerar_lote_id
