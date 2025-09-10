@@ -8,7 +8,6 @@ class FiltroJogosForm(forms.Form):
     STATUS_TODOS = "todos"
     STATUS_ATIVOS = "ativos"
     STATUS_INATIVOS = "inativos"
-
     status = forms.ChoiceField(
         label="Status",
         required=False,
@@ -119,4 +118,5 @@ class SimularForm(forms.Form):
             )
 
         return selecionados
+
 
