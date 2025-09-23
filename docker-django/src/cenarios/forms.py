@@ -1,8 +1,6 @@
 from django import forms
 from .models import Insumo,Produto,Cenario
 
-
-
 class InsumoForm(forms.ModelForm):
     class Meta:
         model = Insumo
@@ -11,6 +9,15 @@ class InsumoForm(forms.ModelForm):
             'fornecedor'
         ]
 
+        error_messages = {
+            'nome': {
+                'required': "Informe o nome do Insumo!",
+         },
+         'fornecedor':{
+             'required' : "Informe o nome do Fornecedor!"
+         }
+        }
+
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
@@ -18,8 +25,19 @@ class ProdutoForm(forms.ModelForm):
             'nome', 
             'insumos',
         ]
+
         widgets = {
             'insumos': forms.CheckboxSelectMultiple(),
+
+        }
+
+        error_messages = {
+            'nome': {
+                'required': "Informe o nome do Produto!",
+         },
+         'insumos' :{
+             'required' : "É necessário selecionar ao menos um insumo!"
+         } 
         }
         
 class CenarioForm(forms.ModelForm):
@@ -29,9 +47,16 @@ class CenarioForm(forms.ModelForm):
             'nome',
             'produto',
         ]
+
         widgets = {
             'produto': forms.Select(),
         }
-    def __init__(self, *args, **kwargs): ## estudar essa linha
-        super().__init__(*args, **kwargs)
-        self.fields['produto'].empty_label = None
+        
+        error_messages = {
+            'nome':{
+                'required': "Informe o nome do Cenário!",
+            },
+            'produto':{
+                'required': "É necessário ter um produto para criar um Cenário",
+            }
+        }

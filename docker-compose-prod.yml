@@ -1,0 +1,97 @@
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+  certs: {}
+  vhost: {}
+  html: {}
+
+services:
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --label-enable
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nz01
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./docker-django/src/static:/src/static
+      - ./docker-django/src/media:/src/media
+    networks:
+      - djangonetwork
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: le01
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nz01
+    networks:
+      - djangonetwork
+    depends_on:
+      - nginx-proxy
+
+  web:
+    image: ghcr.io/karolayneamabile/latest
+    container_name: dz01
+    command: sh -c "python manage.py migrate authentication && python manage.py migrate && gunicorn mydjango.wsgi:application --bind 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8000"
+    environment:
+      - ALLOWED_HOSTS
+      - VIRTUAL_HOST
+      - LETSENCRYPT_HOST
+      - LETSENCRYPT_EMAIL
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DJANGO_SETTINGS_MODULE
+    user: root
+    networks:
+      - djangonetwork
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  db:
+    image: karolayneamabile/custom-postgres:latest
+    container_name: pz01
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    networks:
+      - djangonetwork
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydjango"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  djangonetwork:
+    driver: bridge

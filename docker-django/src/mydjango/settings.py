@@ -23,10 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's_-aro!sw@)bob$tojdq!s61$+3s22y=dbe!b5y3!p4ch&y3k#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['web']
-
+# ALLOWED_HOSTS = ['web']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication',
     'jogo_empresa',
     'celery',
     'jogos',
@@ -45,6 +46,10 @@ INSTALLED_APPS = [
 ]
 
 
+AUTH_USER_MODEL = "authentication.Usuario"
+
+LOGIN_URL = '/auth/login/'
+LOGOUT_REDIRECT_URL = '/auth/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
