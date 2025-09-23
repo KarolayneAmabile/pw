@@ -119,9 +119,9 @@ def jogos_crud(request):
     edit_id = request.GET.get('edit')
     jogo_edit = Jogo.objects.filter(pk=edit_id).select_related('cenario').first() if edit_id else None
 
-    jogos, q, sort = build_jogos_queryset(request)
     cenarios = Cenario.objects.select_related('produto').order_by('nome')
 
+    jogos, q, sort = build_jogos_queryset(request)
     return render(request, 'jogos/jogos.html', {
         'jogos': jogos,
         'jogo_edit': jogo_edit,
